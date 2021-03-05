@@ -2,9 +2,14 @@ const express = require('express');
 const morgan = require('morgan');   //it is a logger of requests
 const bodyParser = require('body-parser'); //parsing the data from front to backend
 const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const User = require('./models/user');
+
+dotenv.config();
 
 //we need to add two middlewares
-const uri = `mongodb+srv://root:fRW5S26rofYbXl4c@amazonclone.mvn2u.mongodb.net/amazonclone?retryWrites=true&w=majority`;
+//we take connection string from the env cause to be secure
+const uri = process.env.DATABASE;
 const connectionParams = {
     useNewUrlParser: true,
     useCreateIndex: true,
@@ -23,15 +28,10 @@ app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-//retreaive data from the servers
-app.get('/', (req, res) => {
-    res.json("Hello amazon clone!");
-});
+//require apis
+const productRoutes = require('./routes/product');
+app.use('/api', productRoutes);
 
-//send data from front to backend
-app.post('/', (req, res) => {
-    console.log(req.body.name);
-})
 
 app.listen(3000, (err) => {
     if(err)
