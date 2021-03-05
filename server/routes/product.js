@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const Product = require("../models/product");
 const upload = require('../middlewares/upload-photo');
-
+// // const cloudinary = require('cloudinary');  
 // title: String,
 // description: String,
 // photo: String,
@@ -9,19 +9,23 @@ const upload = require('../middlewares/upload-photo');
 // stockQuantity: Number,
 // rating: [Number]
 
-
+// cloudinary.config({  
+//     cloud_name: process.env.CLOUDNAME,
+//     api_key: process.env.APIKEY,
+//     api_secret: process.env.APISECRET
+// });  
 
 //POST request  - create a new product
 router.post('/products', upload.single("photo"),  async (req, res) => {
     try{
+        //console.log(req);
         let product = new Product();
         product.title = req.body.title;
         product.description = req.body.description;
         product.price = req.body.price;
         product.stockQuantity = req.body.stockQuantity;
-        product.photo = req.body.photo;
+        product.photo = req.file.path;
         // product.rating = req.body.rating;
-
 
         await product.save();
 
